@@ -1,36 +1,33 @@
 COLLEEN = Colleen
 GRACE = Grace
 SULLY = Sully
-NASM = nasm -f macho64
+NASM = nasm -f macho64 -g
+LD = ld -macosx_version_min 10.8 -lSystem
 
-OBJ_DIR = objs
+PATH_OBJS = objs
 
-SRC_DIR = src
-SRC = $(addprefix $(SRC_DIR)/, \
-		Colleen.s \
-		Grace.s \
-		Sully.s)
-OBJ = $(SRC:$(SRC_DIR)/%.s=$(OBJ_DIR)/%.o)
+SRCS = Colleen.s Grace.s Sully.s
+OBJS = $(SRCS:%.s=$(PATH_OBJS)/%.o)
 
 all: $(COLLEEN) $(GRACE) $(SULLY)
 
-$(COLLEEN): $(OBJ_DIR)/$(COLLEEN).o
-	@ld $^ -macosx_version_min 10.8 -lSystem -o $@
+$(COLLEEN): $(OBJS)
+	@$(LD) -o $@ $(PATH_OBJS)/$@.o
 
-$(GRACE): $(OBJ_DIR)/$(GRACE).o
-	@ld $^ -macosx_version_min 10.8 -lSystem -o $@
+$(GRACE): $(OBJS)
+	@$(LD) -o $@ $(PATH_OBJS)/$@.o
 
-$(SULLY): $(OBJ_DIR)/$(SULLY).o
-	@ld $^ -macosx_version_min 10.8 -lSystem -o $@
+$(SULLY): $(OBJS)
+	@$(LD) -o $@ $(PATH_OBJS)/$@.o
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.s
-	@mkdir -p $(OBJ_DIR)
+$(PATH_OBJS)/%.o: ./%.s
+	@mkdir -p $(PATH_OBJS)
 	@$(NASM) $< -o $@
 
-clean :
-	@rm -rf $(OBJ_DIR)
+clean:
+	@rm -rf $(PATH_OBJS) Grace_kid.s Sully_*
 
-fclean : clean
-	@rm -f $(COLLEEN) $(GRACE) $(SULLY) Sully_* Grace_kid.s
+fclean: clean
+	@rm -rf $(COLLEEN) $(GRACE) $(SULLY)
 
-re : fclean all
+re: fclean all
