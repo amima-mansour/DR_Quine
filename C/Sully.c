@@ -1,25 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
 int main()
 {
 	int i = 5;
-	char *s = "#include <stdio.h>%c#include <stdlib.h>%cint main()%c{%c%cint i = %d;%c%cchar *s = %c%s%c;%c%cchar name[10] = %cSully_5.c%c;%c%cchar exec[10] = %c./Sully_5%c;%c%cFILE *fp;%c%cchar cmd[50] = %cgcc -Wall -Wextra -Werror -o Sully_5 Sully_5.c%c;%c%cwhile (i >= 0)%c%c{%c%c%cfp = fopen(name,%cw%c);%c%c%cif (!fp) exit(1);%c%c%cfprintf(fp,s,10,10,10,10,9,i,10,9,34,s,34,10,9,34,34,10,9,34,34,10,9,10,9,34,34,10,9,10,9,10,9,9,34,34,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,10,10);%c%c%cfclose(fp);%c%c%c--i;%c%c%cname[6] -= 1;%c%c%csystem(cmd);%c%c%csystem(exec);%c%c%ccmd[35] -= 1;%c%c%ccmd[43] -= 1;%c%c%cexec[8] -= 1;%c%c}%c}%c";
-	char name[10] = "Sully_5.c";
-	char exec[10] = "./Sully_5";
-	FILE *fp;
-	char cmd[50] = "gcc -Wall -Wextra -Werror -o Sully_5 Sully_5.c";
-	while (i >= 0)
-	{
-		fp = fopen(name,"w");
-		if (!fp) exit(1);
-		fprintf(fp,s,10,10,10,10,9,i,10,9,34,s,34,10,9,34,34,10,9,34,34,10,9,10,9,34,34,10,9,10,9,10,9,9,34,34,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,10,9,10,10);
-		fclose(fp);
-		--i;
-		name[6] -= 1;
-		system(cmd);
-		system(exec);
-		cmd[35] -= 1;
-		cmd[43] -= 1;
-		exec[8] -= 1;
-	}
+	if (open("Sully_5.c", O_RDONLY) != -1) {--i;}
+	char *s = "#include <stdio.h>%1$c#include <stdlib.h>%1$c#include <fcntl.h>%1$c#include <unistd.h>%1$cint main()%1$c{%1$c%2$cint i = %3$d;%1$c%2$cif (open(%4$cSully_5.c%4$c, O_RDONLY) != -1) {--i;}%1$c%2$cchar *s = %4$c%5$s%4$c;%1$c%2$cint fd;%1$c%2$cchar name[10];%1$c%2$csprintf(name,%4$cSully_%6$cd.c%4$c,i);%1$c%2$cfd = open(name,O_RDWR | O_CREAT, 00644);%1$c%2$cif (fd == -1) exit(1);%1$c%2$cdprintf(fd,s,10,9,i,34,s,37);%1$c%2$cclose(fd);%1$c%2$cchar cmd[100];%1$c%2$csprintf(cmd,%4$cgcc -Wall -Wextra -Werror -o Sully_%6$cd Sully_%6$cd.c%4$c,i,i);%1$c%2$csystem(cmd);%1$c%2$csprintf(name,%4$c./Sully_%6$cd%4$c,i);%1$c%2$cif (i > 0) system(name);%1$c%2$creturn (0);%1$c}%1$c";
+	int fd;
+	char name[10];
+	sprintf(name,"Sully_%d.c",i);
+	fd = open(name,O_RDWR | O_CREAT, 00644);
+	if (fd == -1) exit(1);
+	dprintf(fd,s,10,9,i,34,s,37);
+	close(fd);
+	char cmd[100];
+	sprintf(cmd,"gcc -Wall -Wextra -Werror -o Sully_%d Sully_%d.c",i,i);
+	system(cmd);
+	sprintf(name,"./Sully_%d",i);
+	if (i > 0) system(name);
+	return (0);
 }
